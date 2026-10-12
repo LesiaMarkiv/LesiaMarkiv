@@ -1,0 +1,533 @@
+{
+  "info": {
+    "_postman_id": "ecbc083f-f213-42d4-80ba-16fd77701569",
+    "name": "VictoryCenter",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58254000",
+    "_collection_link": "https://go.postman.co/collection/58254000-ecbc083f-f213-42d4-80ba-16fd77701569?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Partners",
+      "item": [
+        {
+          "name": "Authorization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nif (pm.response.code === 200) {\r\n    const response = pm.response.json();\r\n\r\n    pm.test(\"accessToken exists\", function () {\r\n        pm.expect(response.accessToken).to.exist;\r\n    });\r\n\r\n    pm.environment.set(\"accessToken\", response.accessToken);\r\n}\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/Auth/login",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "Auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 GET Partners Page",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/Partners/page",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "Partners",
+                "page"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 Partners section",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "    const responseJson = pm.response.json();",
+                  "",
+                  "    pm.test(\"Response has a top-level id\", function () {",
+                  "        pm.expect(responseJson).to.be.an(\"object\");",
+                  "        pm.expect(responseJson).to.have.property(\"id\");",
+                  "    });",
+                  "",
+                  "    if (responseJson && Object.prototype.hasOwnProperty.call(responseJson, \"id\")) {",
+                  "        pm.environment.set(\"sectionID\", responseJson.id);",
+                  "    }",
+                  "",
+                  "    pm.test(\"Response has partners array with at least one partner\", function () {",
+                  "        pm.expect(responseJson).to.have.property(\"partners\");",
+                  "        pm.expect(responseJson.partners).to.be.an(\"array\").that.is.not.empty;",
+                  "        pm.expect(responseJson.partners[0]).to.have.property(\"id\");",
+                  "    });",
+                  "",
+                  "    if (responseJson.partners && responseJson.partners.length > 0 && Object.prototype.hasOwnProperty.call(responseJson.partners[0], \"id\")) {",
+                  "        pm.environment.set(\"partnerID\", responseJson.partners[0].id);",
+                  "    }",
+                  "}",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Тестовий заголовок11111\",\"description\":\"Тестовий опис секції1111\",\"partners\":[{\"description\":\"Тестовий опис альпаки11111\",\"imageId\":1279}]}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://backend.victorycenter.online/api/Partners/sections",
+              "protocol": "https",
+              "host": [
+                "backend",
+                "victorycenter",
+                "online"
+              ],
+              "path": [
+                "api",
+                "Partners",
+                "sections"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 PartnerSectionLocalizations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"entityId\":{{sectionID}},\"languageId\":2,\"title\":\"TitleTitleTitle\",\"description\":\"TitleTitle\",\"partners\":[{\"partnerId\":{{partnerID}},\"description\":\"TitleTitle\"}]}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://backend.victorycenter.online/api/PartnerSectionLocalizations",
+              "protocol": "https",
+              "host": [
+                "backend",
+                "victorycenter",
+                "online"
+              ],
+              "path": [
+                "api",
+                "PartnerSectionLocalizations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "401 Partners section",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/Partners/sections/136",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "Partners",
+                "sections",
+                "136"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "404 Partners section",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/Partners/sections/5896321",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "Partners",
+                "sections",
+                "5896321"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 Partners section",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/Partners/sections/{{sectionID}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "Partners",
+                "sections",
+                "{{sectionID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "400 Partners section",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/Partners/sections/abc+",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "Partners",
+                "sections",
+                "abc+"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "400 PartnerSectionLocalizations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Those whose support was invaluable\",\r\n  \"description\": \"Different in approach, but united in intention\",\r\n  \"partners\": [\r\n    {\r\n      \"partnerId\": 19,\r\n      \"description\": \"Awes\"\r\n    }\r\n  ],\r\n  \"entityId\": 4,\r\n  \"languageId\": 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/PartnerSectionLocalizations",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "PartnerSectionLocalizations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "401 PartnerSectionLocalization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Those whose support was invaluable\",\r\n  \"description\": \"Different in approach, but united in intention\",\r\n  \"partners\": [\r\n    {\r\n      \"partnerId\": 19,\r\n      \"description\": \"Awesomic\"\r\n    }\r\n  ],\r\n  \"entityId\": 4,\r\n  \"languageId\": 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/PartnerSectionLocalizations",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "PartnerSectionLocalizations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "404 PartnerSectionLocalizations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Those who opened their spaces to us\",\r\n  \"description\": \"A ranch that gives participants a sense of peace, freedom\",\r\n  \"partners\": [\r\n    {\r\n      \"partnerId\":15,\r\n      \"description\": \"Zhyva Proj\"\r\n    }\r\n  ],\r\n  \"entityId\": 1458,\r\n  \"languageId\": 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/PartnerSectionLocalizations",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "PartnerSectionLocalizations"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Main",
+      "item": [
+        {
+          "name": "200 impactStatistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://backend.victorycenter.online/api/MainPage",
+              "protocol": "https",
+              "host": [
+                "backend",
+                "victorycenter",
+                "online"
+              ],
+              "path": [
+                "api",
+                "MainPage"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
