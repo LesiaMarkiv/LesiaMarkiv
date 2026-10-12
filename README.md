@@ -15,8 +15,9 @@ I actively participated in testing the backend and UI logic for the **VictoryCen
 * 🛠️ **Tools & Skills applied:** GitHub Issues, Zephyr (Jira), Bug tracking, Test design, Priority & Severity assessment.
 
 ### 🚀 API Testing Artifacts
-* **Postman Client:** Experience in building collections, checking server responses, handling localized endpoints, and executing workflow testing.
-
+* 📦 **[Download Postman Collection (.json)](VictoryCenter.postman_collection.json)** — Direct link to the API requests collection.
+* ⚙️ **[Download Postman Environment (.json)](Stage%20VC.postman_environment.json)** — Contains configuration variables required to run the collection successfully.
+* **Postman Client:** Experience in building collections, checking server responses, using environment variables, and executing workflow testing.
 ---
 
 ## 🛠️ Technical Skills
